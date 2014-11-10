@@ -20,6 +20,14 @@
 include_recipe 'rvm::user_install'
 
 Array(node['rvm']['user_installs']).each do |rvm_user|
+
+  # Latest RVM install script requires GPG verification
+  execute "Adding gpg key" do
+    command "gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3"
+
+    only_if 'which gpg'
+  end
+
   perform_install_rubies  = rvm_user['install_rubies'] == true ||
                             rvm_user['install_rubies'] == "true" ||
                             node['rvm']['user_install_rubies'] == true ||
